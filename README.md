@@ -9,12 +9,11 @@
 ---
 
 ## 👥 Integrantes del Proyecto
-| Nombre | Rol |
-|-------|------|
-| **Coraite Yanaje Luz Clara** | Maestro (Alta Disponibilidad – Keepalived, Nginx, RAID 10) |
-| **Muraña Pizarro Nayda Thatiana** | Esclavo (Replicación Maestro–Esclavo + Backup) |
-| **Ríos Lizarazu Joaquin** | Base de Datos + Monitoreo (ClamAV, SpamAssassin, Hardening, Métricas) |
-
+| Nombre | Rol | Contacto (GitHub/Email) |
+|-------|------|--------------------------|
+| **Coraite Yanaje Luz Clara** | Maestro (Alta Disponibilidad – Keepalived, Nginx, RAID 10) | [lcoraiteyanaje-ship-it](https://github.com/lcoraiteyanaje-ship-it) |
+| **Muraña Pizarro Nayda Thatiana** | Esclavo (Replicación Maestro–Esclavo + Backup) | [thatiana2](https://github.com/thatiana2) |
+| **Ríos Lizarazu Joaquin** | Base de Datos + Monitoreo (ClamAV, SpamAssassin, Hardening, Métricas) | *(pendiente GitHub/Email)* |
 ---
 
 ## 🎯 Objetivo del Proyecto
