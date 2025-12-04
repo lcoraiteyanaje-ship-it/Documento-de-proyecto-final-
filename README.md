@@ -1,178 +1,143 @@
-# Documento-de-proyecto-final-
 # 🚀 Proyecto Final SIS313: Implementación de Correo Corporativo de Alta Disponibilidad
 
-**Subtítulo:** Plataforma de Correo Empresarial con Alta Disponibilidad, Replicación y Failover  
 **Asignatura:** SIS313 – Infraestructura, Plataformas Tecnológicas y Redes  
 **Semestre:** 2/2025  
 **Docente:** Ing. Marcelo Quispe Ortega  
 
 ---
 
-## 👥 Integrantes del Proyecto
-| Nombre | Rol | Contacto (GitHub/Email) |
-|-------|------|--------------------------|
-| **Coraite Yanaje Luz Clara** | Maestro (Alta Disponibilidad – Keepalived, Nginx, RAID 10) | [lcoraiteyanaje-ship-it](https://github.com/lcoraiteyanaje-ship-it) |
-| **Muraña Pizarro Nayda Thatiana** | Esclavo (Replicación Maestro–Esclavo + Backup) | [thatiana2](https://github.com/thatiana2) |
-| **Ríos Lizarazu Joaquin** | Base de Datos + Monitoreo (ClamAV, SpamAssassin, Hardening, Métricas) | *(pendiente GitHub/Email)* |
----
+## 👥 Miembros del Equipo (Grupo)
 
-## 🎯 Objetivo del Proyecto
-
-Implementar una plataforma de **correo corporativo empresarial** basada en iRedMail/Mailcow que garantice:
-
-- Alta Disponibilidad mediante **VRRP y failover automático**  
-- Eliminación de puntos únicos de falla (SPOF)  
-- Replicación Maestro–Esclavo de la base de datos  
-- Tolerancia de fallos en discos con **RAID 10**  
-- Seguridad reforzada: TLS/SSL, SPF, DKIM, DMARC  
-- Protección Anti-Spam/Anti-Virus usando ClamAV y SpamAssassin  
-
-### 🔎 Problema / Justificación
-El correo institucional es un servicio crítico. Una falla puede dejar incomunicada a toda la organización. El sistema anterior presentaba **SPOF**, falta de redundancia y vulnerabilidades.
-
-### 🧩 Solución Propuesta
-Implementar una arquitectura redundante compuesta por:
-
-✔ Maestro – Esclavo con replicación  
-✔ Keepalived + VRRP para IP Virtual  
-✔ RAID 10 para tolerancia a fallos  
-✔ Hardening avanzado  
-✔ Anti-Spam y Anti-Virus  
-✔ Monitoreo y métricas  
+| Nombre Completo | Rol en el Proyecto | Contacto (GitHub / Email) |
+|-----------------|-------------------|----------------------------|
+| **Coraite Yanaje Luz Clara** | Maestro – Alta Disponibilidad (Keepalived, Nginx, RAID 10) | [lcoraiteyanaje-ship-it](https://github.com/lcoraiteyanaje-ship-it) |
+| **Muraña Pizarro Nayda Thatiana** | Servidor Esclavo – Replicación BD, Backup | [thatiana2](https://github.com/thatiana2) |
+| **Ríos Lizarazu Joaquin** | Base de Datos + Seguridad + Monitoreo | *(pendiente GitHub / Email)* |
 
 ---
 
-## 🛠️ Tecnologías Implementadas
+# I. Objetivo del Proyecto
 
-### ⭐ Software Principal
-- **iRedMail / Mailcow** – Suite completa de correo
-- **Postfix** → MTA  
-- **Dovecot** → IMAP/POP3  
-- **Nginx** → Webmail y panel administrativo  
+El objetivo principal de este proyecto es implementar un **sistema de correo corporativo** con Alta Disponibilidad que garantice:
 
-### 🖥️ Servidores y Sistema Operativo
-- **Ubuntu Server 22.04 LTS**  
-- Máquinas virtuales: Maestro, Esclavo, Monitor  
+- funcionamiento continuo ante fallas del servidor,
+- replicación automática de datos críticos,
+- tiempos mínimos de interrupción,
+- protección contra spam y malware,
+- una infraestructura segura, escalable y confiable.
 
-### 🗄️ Base de Datos
-- **MariaDB** (usuarios, dominios, configuraciones)
-
-### 🔒 Seguridad
-- **ClamAV**, **SpamAssassin**  
-- Certificados SSL/TLS  
-- Registros: SPF, DKIM, DMARC  
-- Firewall y buenas prácticas de hardening  
-
-### 🔁 Alta Disponibilidad
-- **Keepalived (VRRP)**  
-- Scripts de salud para Postfix, Dovecot y Nginx  
-- IP Virtual (VIP) compartida por Maestro/Esclavo  
-
-### 💾 Almacenamiento
-- **RAID 10** con `mdadm`  
-- Montaje automático con `/etc/fstab`
+Este proyecto asegura que el servicio de correo institucional continúe funcionando incluso ante fallas graves, permitiendo que la comunicación organizacional no se detenga.
 
 ---
 
-## 🧠 Temas de SIS313 Aplicados
+# II. Justificación e Importancia
 
-### 🔹 T1 — Continuidad Operacional
-- Eliminación de SPOF  
-- Redundancia total del servicio crítico  
+El correo electrónico es uno de los **servicios más críticos** dentro de universidades, empresas e instituciones.  
+Su caída implica:
 
-### 🔹 T2 — Alta Disponibilidad
-- Failover con Keepalived  
-- Replicación de BD  
-- RAID 10  
+- pérdida de comunicación,
+- retraso en trámites importantes,
+- riesgo de pérdida de información,
+- impacto en docentes, estudiantes y personal administrativo.
 
-### 🔹 T4 — Servicios Complejos
-- Configuración SMTP/IMAP/POP3  
-- Optimización Postfix y Dovecot  
+Este proyecto:
 
-### 🔹 T5 — Seguridad y Hardening
-- TLS/SSL  
-- SPF, DKIM y DMARC  
-- Anti-Spam y Anti-Virus  
-- Firewall y buenas prácticas  
+✔ elimina puntos únicos de falla (SPOF)  
+✔ garantiza continuidad operacional  
+✔ replica y protege información del correo  
+✔ permite failover automático  
+✔ refuerza la seguridad con estándares modernos  
 
----
-
-## 🌐 Arquitectura del Sistema
-
-La infraestructura se compone de tres máquinas:
-
-### 🟢 **VM Maestro**
-- iRedMail/Mailcow  
-- Postfix + Dovecot + Nginx  
-- Keepalived (MASTER)  
-- RAID 10  
-
-### 🔵 **VM Esclavo**
-- Replicación BD  
-- Keepalived (BACKUP)  
-- RAID 10  
-
-### 🟡 **VM Monitor**
-- Monitoreo (Prometheus/Grafana)  
-- Validación SPF/DKIM/DMARC  
-- Seguridad y registros  
-
-### Componentes Clave
-- IP Virtual (VIP)  
-- Scripts de salud  
-- BD replicada  
-- Buzones sincronizados  
-- Hardening en todas las capas  
+En conclusión, la solución permite un sistema de correo **robusto, seguro y tolerante a fallos**.
 
 ---
 
-## ⚙️ Estrategia de Implementación
+# III. Tecnologías y Conceptos Implementados
 
-### 1️⃣ RAID 10
-- Creado con `mdadm`  
-- Configurado para montaje automático  
+## 3.1 Tecnologías Clave Utilizadas
 
-### 2️⃣ Instalación de Servicios de Correo
-- Instalación iRedMail/Mailcow  
-- Configuración Postfix, Dovecot, Nginx  
-- Integración de Anti-Spam/Anti-Virus  
-
-### 3️⃣ Alta Disponibilidad
-- Keepalived MASTER/BACKUP  
-- VRRP + IP Virtual  
-- Scripts de monitoreo de salud  
-
-### 4️⃣ Hardening y Monitoreo
-- SPF, DKIM, DMARC  
-- ClamAV + SpamAssassin  
-- Prometheus + Grafana  
+| Tecnología | Rol dentro del Proyecto |
+|-----------|--------------------------|
+| **iRedMail / Mailcow** | Suite principal del servicio de correo |
+| **Postfix (MTA)** | Envío y recepción de correos |
+| **Dovecot (IMAP/POP3)** | Entrega y acceso al buzón |
+| **MariaDB** | Base de datos del sistema |
+| **NGINX** | Webmail y panel administrativo |
+| **RAID 10 (mdadm)** | Redundancia y rendimiento en discos |
+| **Keepalived + VRRP** | Alta Disponibilidad con IP Virtual |
+| **ClamAV / SpamAssassin** | Filtros anti-virus / anti-spam |
+| **UFW / TLS / DKIM / SPF / DMARC** | Seguridad y autenticación del dominio |
 
 ---
 
-## ✔️ Pruebas y Validación
+## 3.2 Temas de la Asignatura Aplicados (T1 - T6)
 
-| Prueba | Resultado |
-|--------|-----------|
-| Failover con VRRP | Migración exitosa < 5 s |
-| Replicación BD | Datos coherentes tras failover |
-| Anti-virus (EICAR) | Bloqueado correctamente |
-| SPF/DKIM/DMARC | Validación exitosa |
+| Tema SIS313 | Aplicación en el sistema de correo |
+|-------------|-----------------------------------|
+| 🟢 **T1 — Continuidad Operacional** | Eliminación de SPOF y redundancia completa en servicios críticos |
+| 🟢 **T2 — Alta Disponibilidad (HA)** | Failover automático con Keepalived + VRRP |
+| 🟢 **T3 — Servicios Distribuidos** | Maestro–Esclavo, servidores paralelos |
+| 🟢 **T4 — Servicios Complejos** | SMTP, IMAP, POP3, Webmail, paneles de administración |
+| 🟢 **T5 — Seguridad y Hardening** | TLS, DKIM, SPF, DMARC, SpamAssassin, ClamAV |
+| 🟢 **T6 — Automatización y DRP** | Scripts, replicación automática, failover automático |
+
+---
+
+# IV. Diseño de la Infraestructura y Topología
+
+## 4.1 Diseño General
+
+| VM / Host | Rol | IP | Red Lógica | SO |
+|-----------|-----|----|------------|----|
+| **VM-MAESTRO** | Servidor principal | *(variable)* | Red 1 | Ubuntu 22.04 |
+| **VM-ESCLAVO** | Servidor de respaldo + BD réplica | *(variable)* | Red 1 | Ubuntu 22.04 |
+| **VM-MONITOR** | Seguridad y métricas | *(variable)* | Red 2 | Ubuntu 22.04 |
+
+### Componentes incluidos:
+- IP Virtual (VIP) para failover inmediato  
+- BD replicada (Maestro → Esclavo)  
+- RAID 10 en Maestro y Esclavo  
+- Monitoreo y seguridad en nodo especial (Monitor)  
+- Filtros de spam y virus distribuidos  
 
 ---
 
-## 🏁 Conclusiones
+# V. Estrategia Adoptada
 
-- El sistema de correo ahora cuenta con **Alta Disponibilidad real**.  
-- Se eliminaron puntos únicos de falla a nivel de servicio, BD y discos.  
-- La plataforma es segura, tolerante a fallos y preparada para operación continua.  
-- Las herramientas implementadas permiten monitoreo y respuesta rápida ante incidentes.  
+### 🟦 1. **Alta Disponibilidad (HA)**
+- Keepalived configurado en Maestro y Esclavo  
+- VRRP asignando una IP Virtual  
+- Scripts de salud revisan Postfix, Dovecot y Nginx  
 
-### 📚 Lecciones Aprendidas
-- Los scripts de salud en Keepalived son esenciales para un failover fiable.  
-- RAID 10 mejora rendimiento y resiliencia.  
-- La replicación y sincronización adecuada evita corrupción de datos.  
+### 🟧 2. **Replicación de Base de Datos (MariaDB)**
+- Replicación Maestro → Esclavo  
+- Persistencia en RAID 10  
+
+### 🟩 3. **RAID 10**
+Proporciona:
+- redundancia en discos,
+- alto rendimiento en lecturas/escrituras,
+- seguridad ante fallos de hardware.
+
+### 🟨 4. **Hardening y Seguridad**
+Incluye:
+- TLS obligatorio  
+- Configuración SPF  
+- Firmas DKIM  
+- Políticas DMARC  
+- Antivirus (ClamAV)  
+- Antispam (SpamAssassin)  
 
 ---
+
+# VI. Guía de Implementación y Puesta en Marcha
+
+## 6.1 Pre-requisitos
+
+- 3 máquinas virtuales  
+- Ubuntu Server 22.04  
+- Conectividad entre todas las VMs  
+- Paquetes esenciales instalados:
 
 ## 📦 Repositorio
 
