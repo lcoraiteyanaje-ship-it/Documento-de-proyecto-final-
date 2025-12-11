@@ -145,7 +145,7 @@ sudo systemctl restart keepalived
 # 6. Integración con NFS
 # (Los comandos de montaje NFS y configuración de Postfix/Dovecot son idénticos a VM1)
 ```
-###III. Configuración de VM3 (storage01) - NFS, DNS, DHCP
+### III. Configuración de VM3 (storage01) - NFS, DNS, DHCP
 ```bash
 # 1. Configuración de Red (Interfaces de Debian)
 nano /etc/network/interfaces
@@ -196,7 +196,9 @@ nano /etc/dhcp/dhcpd.conf
 #   # ... (Otras opciones de subred)
 # }
 systemctl restart isc-dhcp-server
-###IV. Configuraciones Comunes (Roundcube, Seguridad, Listas)
+```
+### IV. Configuraciones Comunes (Roundcube, Seguridad, Listas)
+```bash
   # 1. Configuración de Roundcube
 sudo nano /etc/roundcube/config.inc.php
 # $config['smtp_host'] = 'localhost:25';
@@ -237,7 +239,7 @@ sudo nano /etc/aliases
 # todos: nayda, ventas
 sudo newaliases
 ```
-###V. Verificaciones Cruciales
+### V. Verificaciones Cruciales
 ```bash
 # 1. Verificar DNS y VIP (Desde VM3 o cliente)
 nslookup mail.chocolatesparati.com.bo 192.168.100.4
