@@ -1,145 +1,113 @@
-# 🚀 Proyecto Final SIS313: Implementación de Correo Corporativo de Alta Disponibilidad
+# Proyecto Final SIS313: IMPLEMENTACIÓN DE CORREO CORPORATIVO DE ALTA DISPONIBILIDAD
 
-**Asignatura:** SIS313 – Infraestructura, Plataformas Tecnológicas y Redes  
+**Asignatura:** SIS313: Infraestructura, Plataformas Tecnológicas y Redes  
 **Semestre:** 2/2025  
 **Docente:** Ing. Marcelo Quispe Ortega  
+**Fecha del proyecto:** 21/08/2025  
+**Integrantes:**  
+- Coraite Yanaje Luz Clara (Maestro)  
+- Muraña Pizarro Nayda Thatiana (Esclavo)  
 
 ---
 
-## 👥 Miembros del Equipo (Grupo)
+## Introducción
 
-| Nombre Completo | Rol en el Proyecto | Contacto (GitHub / Email) |
-|-----------------|-------------------|----------------------------|
-| **Coraite Yanaje Luz Clara** | Maestro – Alta Disponibilidad (Keepalived, Nginx, RAID 10) | [lcoraiteyanaje-ship-it](https://github.com/lcoraiteyanaje-ship-it) |
-| **Muraña Pizarro Nayda Thatiana** | Servidor Esclavo – Replicación BD, Backup | [thatiana2](https://github.com/thatiana2) |
-| **Ríos Lizarazu Joaquin** | Base de Datos + Seguridad + Monitoreo | *(pendiente GitHub / Email)* |
+El presente proyecto desarrolla la implementación completa de una plataforma de correo corporativo con alta disponibilidad (HA) utilizando tecnologías de software libre. Se integran servicios esenciales como SMTP, IMAP, POP3, Webmail y DNS dentro de una arquitectura redundante que garantiza continuidad operativa incluso ante fallos críticos de hardware o software, reforzada mediante mecanismos de seguridad como cifrado TLS, autenticación de dominio (SPF/DKIM/DMARC) y filtros de contenido (ClamAV / SpamAssassin). El diseño permite que la infraestructura responda a los exigentes niveles de confiabilidad, robustez y escalabilidad que requieren las organizaciones modernas.
 
 ---
 
-# I. Objetivo del Proyecto
+## Máquinas del Proyecto (Roles y Responsabilidades)
 
-El objetivo principal de este proyecto es implementar un **sistema de correo corporativo** con Alta Disponibilidad que garantice:
-
-- funcionamiento continuo ante fallas del servidor,
-- replicación automática de datos críticos,
-- tiempos mínimos de interrupción,
-- protección contra spam y malware,
-- una infraestructura segura, escalable y confiable.
-
-Este proyecto asegura que el servicio de correo institucional continúe funcionando incluso ante fallas graves, permitiendo que la comunicación organizacional no se detenga.
+| Nombre Completo | Rol en el Proyecto | Sistema Operativo | Responsabilidades Clave |
+|-----------------|--------------------|-------------------|-------------------------|
+| Coraite Yanaje Luz Clara | Maestro | **Ubuntu Server 22.04** | Despliegue y configuración de la **VM Maestro (mail01)**: instalación y ajuste de **iRedMail / Postfix / Dovecot / Roundcube** y configuración de **Keepalived en modo MASTER** para gestión de la VIP. Supervisión de servicios críticos y validación del nodo activo. |
+| Muraña Pizarro Nayda Thatiana | Esclavo | **Ubuntu Server 22.04** | Despliegue y configuración de la **VM Esclavo (mail02)** con servicios espejo al Maestro. Configuración de **Keepalived en modo BACKUP** y validación de failover y acceso a buzones vía NFS. |
+| Servidor Debian (storage01) | Backup / Infraestructura | **Debian** | Servidor orientado a soporte: **NFS** para buzones Maildir, **Bind9** (DNS corporativo), **ISC DHCP** (asignación IP). Garantiza persistencia de datos, resolución interna y disponibilidad de recursos de red. |
 
 ---
 
-# II. Justificación e Importancia
+## Objetivo
 
-El correo electrónico es uno de los **servicios más críticos** dentro de universidades, empresas e instituciones.  
-Su caída implica:
-
-- pérdida de comunicación,
-- retraso en trámites importantes,
-- riesgo de pérdida de información,
-- impacto en docentes, estudiantes y personal administrativo.
-
-Este proyecto:
-
-✔ elimina puntos únicos de falla (SPOF)  
-✔ garantiza continuidad operacional  
-✔ replica y protege información del correo  
-✔ permite failover automático  
-✔ refuerza la seguridad con estándares modernos  
-
-En conclusión, la solución permite un sistema de correo **robusto, seguro y tolerante a fallos**.
+Implementar una solución de correo electrónico empresarial con Alta Disponibilidad mediante servidores redundantes con failover automático, almacenamiento compartido, autenticación integrada y protección antispam/antivirus, permitiendo gestionar buzones corporativos, listas de distribución y accesos seguros para que el servicio permanezca operativo y accesible aun ante fallos en cualquiera de sus componentes.
 
 ---
 
-# III. Tecnologías y Conceptos Implementados
+## Justificación
 
-## 3.1 Tecnologías Clave Utilizadas
-
-| Tecnología | Rol dentro del Proyecto |
-|-----------|--------------------------|
-| **iRedMail / Mailcow** | Suite principal del servicio de correo |
-| **Postfix (MTA)** | Envío y recepción de correos |
-| **Dovecot (IMAP/POP3)** | Entrega y acceso al buzón |
-| **MariaDB** | Base de datos del sistema |
-| **NGINX** | Webmail y panel administrativo |
-| **RAID 10 (mdadm)** | Redundancia y rendimiento en discos |
-| **Keepalived + VRRP** | Alta Disponibilidad con IP Virtual |
-| **ClamAV / SpamAssassin** | Filtros anti-virus / anti-spam |
-| **UFW / TLS / DKIM / SPF / DMARC** | Seguridad y autenticación del dominio |
+El correo electrónico es un sistema crítico institucional. Su interrupción implica pérdida de productividad, fallos en la comunicación y riesgo operacional. Por ello se implementa una arquitectura Activo–Pasivo que elimina el Punto Único de Falla (SPOF), incorpora mecanismos de seguridad para proteger integridad, disponibilidad y confidencialidad y asegura la continuidad operacional mediante redundancia y failover automatizado.
 
 ---
 
-## 3.2 Temas de la Asignatura Aplicados (T1 - T6)
+## Tecnologías implementadas
 
-| Tema SIS313 | Aplicación en el sistema de correo |
-|-------------|-----------------------------------|
-| 🟢 **T1 — Continuidad Operacional** | Eliminación de SPOF y redundancia completa en servicios críticos |
-| 🟢 **T2 — Alta Disponibilidad (HA)** | Failover automático con Keepalived + VRRP |
-| 🟢 **T3 — Servicios Distribuidos** | Maestro–Esclavo, servidores paralelos |
-| 🟢 **T4 — Servicios Complejos** | SMTP, IMAP, POP3, Webmail, paneles de administración |
-| 🟢 **T5 — Seguridad y Hardening** | TLS, DKIM, SPF, DMARC, SpamAssassin, ClamAV |
-| 🟢 **T6 — Automatización y DRP** | Scripts, replicación automática, failover automático |
-
----
-
-# IV. Diseño de la Infraestructura y Topología
-
-## 4.1 Diseño General
-
-| VM / Host | Rol | IP | Red Lógica | SO |
-|-----------|-----|----|------------|----|
-| **VM-MAESTRO** | Servidor principal | *(variable)* | Red 1 | Ubuntu 22.04 |
-| **VM-ESCLAVO** | Servidor de respaldo + BD réplica | *(variable)* | Red 1 | Ubuntu 22.04 |
-| **VM-MONITOR** | Seguridad y métricas | *(variable)* | Red 2 | Ubuntu 22.04 |
-
-### Componentes incluidos:
-- IP Virtual (VIP) para failover inmediato  
-- BD replicada (Maestro → Esclavo)  
-- RAID 10 en Maestro y Esclavo  
-- Monitoreo y seguridad en nodo especial (Monitor)  
-- Filtros de spam y virus distribuidos  
+| Categoría | Software / Tecnología | Función en el Proyecto |
+|-----------|------------------------|------------------------|
+| Tecnologías Principales | **iRedMail** | Suite de correo empresarial que integra Postfix, Dovecot, Amavisd, Nginx/Apache, MariaDB/PostgreSQL y herramientas de administración. Facilita despliegue completo en Maestro y Esclavo. |
+| Servidores / SO | **Ubuntu Server 22.04** (Maestro y Esclavo) / **Debian** (Backup) | Ubuntu ejecuta iRedMail; Debian ofrece NFS, DNS y DHCP. |
+| Capa de Aplicación | **Nginx / Apache** (según instalación de iRedMail) | Servidor web para Webmail y panel de administración. |
+| Webmail | **Roundcube** (incluido en iRedMail) | Interfaz web para usuarios. |
+| MTA / MDA | **Postfix / Dovecot** | Postfix como MTA (SMTP), Dovecot como MDA (IMAP/POP3). |
+| Antivirus / Antispam | **Amavisd + ClamAV + SpamAssassin** | Filtrado y protección del flujo de correo. |
+| Base de Datos | **MariaDB / PostgreSQL** | Almacena usuarios, dominios y configuraciones (según instalación). |
+| Alta Disponibilidad (HA) | **Keepalived + VRRP** | Failover automático de la IP Virtual (VIP). |
+| Almacenamiento Compartido | **NFS (Debian)** | Almacena Maildir accesible por Maestro y Esclavo. |
+| DNS Corporativo | **Bind9 (Debian)** | Zona `chocolatesparati.com.bo`, A/MX/TXT (SPF). |
+| Asignación de Red | **ISC DHCP Server (Debian)** | Entrega IPs y parámetros de red a los clientes. |
 
 ---
 
-# V. Estrategia Adoptada
+## Temas de la Asignatura Puestos en Práctica (T1–T5)
 
-### 🟦 1. **Alta Disponibilidad (HA)**
-- Keepalived configurado en Maestro y Esclavo  
-- VRRP asignando una IP Virtual  
-- Scripts de salud revisan Postfix, Dovecot y Nginx  
+### T1 – Fundamentos de la Continuidad Operacional (CO)
+- Identificación del SPOF: análisis de riesgos al usar un único servidor de correo; justificación del esquema Maestro–Esclavo.  
+- Aseguramiento del servicio crítico: redundancia de servidores, VIP y almacenamiento compartido garantizan continuidad operativa.
 
-### 🟧 2. **Replicación de Base de Datos (MariaDB)**
-- Replicación Maestro → Esclavo  
-- Persistencia en RAID 10  
+### T2 – Alta Disponibilidad (HA) y Tolerancia a Fallos
+- Failover Activo–Pasivo con VRRP (Keepalived): VIP que conmuta SMTP/IMAP/Webmail automáticamente.  
+- Redundancia operacional mediante NFS en Debian en lugar de RAID10 o replicación compleja.  
+- Arquitectura distribuida (Maestro, Esclavo, Backup) para mitigar fallos en múltiples capas.
 
-### 🟩 3. **RAID 10**
-Proporciona:
-- redundancia en discos,
-- alto rendimiento en lecturas/escrituras,
-- seguridad ante fallos de hardware.
+### T4 – Optimización y Servicios Complejos
+- Configuración integrada de SMTP / IMAP / POP3 usando iRedMail (Postfix + Dovecot + Roundcube).  
+- Ajustes de rendimiento: tamaño de mensajes, límites, mail_location y políticas de autenticación.  
+- Orquestación de servicios (iRedMail, Amavisd, ClamAV, SpamAssassin, DNS, DHCP, Keepalived).
 
-### 🟨 4. **Hardening y Seguridad**
-Incluye:
-- TLS obligatorio  
-- Configuración SPF  
-- Firmas DKIM  
-- Políticas DMARC  
-- Antivirus (ClamAV)  
-- Antispam (SpamAssassin)  
+### T5 – Seguridad y Hardening
+- Cifrado TLS obligatorio para Postfix y Dovecot.  
+- Publicación de SPF en DNS; implementación de DKIM y DMARC recomendada.  
+- Integración Amavisd + ClamAV + SpamAssassin para defensa en profundidad.  
+- Hardening general: UFW/iptables, permisos, deshabilitar autenticación insegura y monitoreo.
 
 ---
 
-# VI. Guía de Implementación y Puesta en Marcha
+## Estrategia Adoptada para la Alta Disponibilidad
 
-## 6.1 Pre-requisitos
+Arquitectura Maestro–Esclavo (Activo–Pasivo) con **Keepalived (VRRP)** gestionando una **IP Virtual (VIP: 192.168.100.100)**. El Maestro atiende tráfico; el Esclavo permanece en standby y asume la VIP al detectar fallo. El servidor Debian proporciona NFS para buzones, Bind9 y DHCP, evitando replicación de almacenamiento dentro de los nodos de correo y simplificando la coherencia de buzones.
 
-- 3 máquinas virtuales  
-- Ubuntu Server 22.04  
-- Conectividad entre todas las VMs  
-- Paquetes esenciales instalados:
+---
 
-## 📦 Repositorio
+## Componentes Clave y Función
 
-Este README corresponde al proyecto final del curso **SIS313 – Infraestructura, Plataformas Tecnológicas y Redes**.
+| Componente | Función en la Arquitectura | Tecnología Clave |
+|------------|----------------------------|------------------|
+| Balanceador / Failover | Mantener VIP única apuntando al servidor activo | Keepalived (VRRP) |
+| Servidor Maestro (Activo) | Atiende SMTP, IMAP, Webmail | Ubuntu + iRedMail |
+| Servidor Esclavo (Pasivo) | Standby y asume servicio si Maestro falla | Ubuntu + iRedMail |
+| Servidor Backup (Debian) | NFS, DNS (Bind9), DHCP | Debian + NFS + Bind9 + ISC-DHCP |
+| Firewall | Controla puertos esenciales (25, 465, 587, 143, 993, 110, 995, 80, 443) | UFW / iptables |
+| Antivirus / Antispam | Inspección y filtrado de mensajes | Amavisd + ClamAV + SpamAssassin |
 
+---
+
+## Guía de Implementación y Puesta en Marcha (versión completa y práctica)
+
+> **Nota:** adapta nombres de interfaces (e.g., `ens33`) y dominios a tu entorno.
+
+### Pre-requisitos
+- 3 VMs: VM1 (mail01 — Ubuntu 22.04), VM2 (mail02 — Ubuntu 22.04), VM3 (storage01 — Debian).  
+- Red interna `192.168.100.0/24`. VIP sugerida: `192.168.100.100`.  
+- Usuarios con sudo.  
+- Certificados TLS (snakeoil para pruebas; Let's Encrypt en producción).  
+- Paquetes base: `curl`, `net-tools`, `nfs-common`/`nfs-kernel-server`, `keepalived`, `postfix`, `dovecot`, `roundcube`, `apache2` o `iRedMail` instalador.
+
+---
